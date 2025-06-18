@@ -1,0 +1,101 @@
+/* CssHourglassDisplay.css */
+:root {
+  /* Base dimensions - can be scaled by adjusting these */
+  --chd-hourglass-total-width: 120px; /* Max width of the bulb */
+  --chd-bulb-height: 120px;           /* Height of each bulb */
+  --chd-neck-height: 25px;            /* Height of the neck section */
+  --chd-neck-width: 15px;             /* Width of the passage in the neck */
+
+  --chd-sand-color: #FBBF24; /* Tailwind's amber-400 */
+  --chd-glass-color: rgba(203, 213, 225, 0.2); /* slate-300 with alpha, for glass fill */
+  --chd-glass-border-color: rgba(156, 163, 175, 0.3); /* slate-400 with alpha, for glass border */
+  --chd-glass-border-width: 2px;
+
+  /* Custom properties controlled by the React component */
+  /* --top-sand-fill-factor: 1; */ /* Default to full, overridden by inline style */
+  /* --bottom-sand-fill-factor: 0; */ /* Default to empty, overridden by inline style */
+  /* --stream-opacity: 0; */ /* Default to hidden, overridden by inline style */
+}
+
+.chd-container {
+  width: var(--chd-hourglass-total-width);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 0; /* Add some margin for spacing */
+}
+
+.chd-bulb {
+  width: var(--chd-hourglass-total-width);
+  height: var(--chd-bulb-height);
+  background-color: var(--chd-glass-color);
+  border: var(--chd-glass-border-width) solid var(--chd-glass-border-color);
+  position: relative;
+  overflow: hidden; /* Crucial for shaping the sand via parent's clip-path */
+  box-sizing: border-box;
+}
+
+.chd-top-bulb {
+  clip-path: polygon(
+    0% 0%, /* top-left */
+    100% 0%, /* top-right */
+    calc(50% + var(--chd-neck-width) / 2) 100%, /* bottom-right-neck */
+    calc(50% - var(--chd-neck-width) / 2) 100% /* bottom-left-neck */
+  );
+  border-bottom: none; /* Neck will connect here */
+  border-radius: 20px 20px 2px 2px; /* Soften top corners, sharper at neck */
+}
+
+.chd-bottom-bulb {
+  clip-path: polygon(
+    calc(50% - var(--chd-neck-width) / 2) 0%, /* top-left-neck */
+    calc(50% + var(--chd-neck-width) / 2) 0%, /* top-right-neck */
+    100% 100%, /* bottom-right */
+    0% 100% /* bottom-left */
+  );
+  border-top: none; /* Neck will connect here */
+  border-radius: 2px 2px 20px 20px; /* Soften bottom corners, sharper at neck */
+}
+
+.chd-sand {
+  position: absolute;
+  left: 0;
+  width: 100%; /* Sand rectangle fills bulb width, clipped by bulb's clip-path */
+  background-color: var(--chd-sand-color);
+  transition: height 0.1s linear; /* Smooth fill/drain animation */
+  will-change: height; /* Performance hint for animation */
+}
+
+.chd-top-sand {
+  bottom: 0; /* Aligns sand to the "bottom" of the top bulb (i.e., the neck opening) */
+  height: calc(var(--chd-bulb-height) * var(--top-sand-fill-factor));
+}
+
+.chd-bottom-sand {
+  bottom: 0; /* Sand fills from the bottom up */
+  height: calc(var(--chd-bulb-height) * var(--bottom-sand-fill-factor));
+}
+
+.chd-neck {
+  width: var(--chd-neck-width);
+  height: var(--chd-neck-height);
+  background-color: var(--chd-glass-color); /* Glass color for the neck piece */
+  border-left: var(--chd-glass-border-width) solid var(--chd-glass-border-color);
+  border-right: var(--chd-glass-border-width) solid var(--chd-glass-border-color);
+  position: relative; /* For positioning the sand stream */
+  box-sizing: border-box;
+}
+
+.chd-sand-stream {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0;
+  width: 4px; /* Width of the falling sand stream */
+  height: 100%; /* Stream fills the neck's height */
+  background-color: var(--chd-sand-color);
+  opacity: var(--stream-opacity); /* Visibility controlled by JS via CSS custom property */
+  transition: opacity 0.1s ease-in-out;
+  border-radius: 2px; /* Slightly rounded stream ends */
+  will-change: opacity;
+}

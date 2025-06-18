@@ -1,0 +1,5 @@
+{
+  "name": "Hourglass Timer",
+  "description": "A visually appealing hourglass timer application where users can set a custom duration. The hourglass animates as time passes.",
+  "requestFramePermissions": []
+}
