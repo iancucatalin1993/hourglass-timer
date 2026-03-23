@@ -9,3 +9,5 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(<App />);
+
+window.resizeTo(470, 775);

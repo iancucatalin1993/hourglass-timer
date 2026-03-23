@@ -70,6 +70,7 @@ const App: React.FC = () =>
                 setCurrentRemainingSeconds(prevSeconds => {
                     if (prevSeconds <= 1) {
                         setTimerStatus(TimerStatus.Finished);
+                        notify("Hourglass - Time's up!");
                         return 0;
                     }
                     return prevSeconds - 1;
@@ -106,7 +107,6 @@ const App: React.FC = () =>
         const totalDuration = h * 3600 + m * 60 + s;
 
         if (totalDuration <= 0) {
-            alert("Please set a duration greater than 0 seconds.");
             return;
         }
 
@@ -144,17 +144,15 @@ const App: React.FC = () =>
     return (
         <div
             className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-800 to-gray-900 text-slate-100 selection:bg-sky-500 selection:text-white">
-            <header className="mb-8 text-center">
+            <header className="timer-info-header mb-8 text-center">
                 <h1 className="text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-sky-400 to-blue-500">
                     Hourglass Timer
                 </h1>
-                {timerStatus !== TimerStatus.Idle && (
-                    <p className="mt-4 text-6xl font-mono tracking-wider text-slate-200">
-                        {formatTime(currentRemainingSeconds)}
-                    </p>
-                )}
+                <p className="countdown mt-4 text-6xl font-mono tracking-wider text-slate-200">
+                    {formatTime(currentRemainingSeconds)}
+                </p>
                 {timerStatus === TimerStatus.Finished && (
-                    <p className="mt-2 text-2xl text-green-400 animate-pulse">Time's up!</p>
+                    <p className="finish-label mt-2 text-2xl text-green-400 animate-pulse">Time's up!</p>
                 )}
             </header>
 
@@ -164,7 +162,7 @@ const App: React.FC = () =>
                 <CssHourglassDisplay progress={progress} timerStatus={timerStatus}/>
             </div>
 
-            <section className="mt-8 w-full max-w-md">
+            <section className="mt-2 w-full max-w-md">
                 <div className="grid grid-cols-3 gap-3 mb-6">
                     {(['Hours', 'Minutes', 'Seconds'] as const).map((label, idx) => {
                         const value = [inputHours, inputMinutes, inputSeconds][idx];
@@ -212,11 +210,28 @@ const App: React.FC = () =>
                     </button>
                 </div>
             </section>
-            <footer className="mt-12 text-center text-sm text-slate-500">
-                <p>Work expands to fill the amount of time that you give it</p>
-            </footer>
         </div>
     );
 };
+
+// show desktop notification
+function notify(message: string): void
+{
+    if (!("Notification" in window)) {
+        return;
+    }
+    // check whether notification permissions have already been granted
+    if (Notification.permission === "granted") {
+        new Notification(message);
+    } else if (Notification.permission !== "denied") {
+        // ask the user for permission
+        Notification.requestPermission().then((permission) => {
+            // if the user accepts, create a notification
+            if (permission === "granted") {
+                new Notification(message);
+            }
+        });
+    }
+}
 
 export default App;

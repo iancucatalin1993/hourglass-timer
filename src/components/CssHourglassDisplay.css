@@ -1,15 +1,15 @@
 /* CssHourglassDisplay.css */
 :root {
   /* Base dimensions - can be scaled by adjusting these */
-  --chd-hourglass-total-width: 120px; /* Max width of the bulb */
-  --chd-bulb-height: 120px;           /* Height of each bulb */
+  --chd-hourglass-total-width: 125px; /* Max width of the bulb */
+  --chd-bulb-height: 110px;           /* Height of each bulb */
   --chd-neck-height: 25px;            /* Height of the neck section */
   --chd-neck-width: 15px;             /* Width of the passage in the neck */
 
   --chd-sand-color: #FBBF24; /* Tailwind's amber-400 */
   --chd-glass-color: rgba(203, 213, 225, 0.2); /* slate-300 with alpha, for glass fill */
   --chd-glass-border-color: rgba(156, 163, 175, 0.3); /* slate-400 with alpha, for glass border */
-  --chd-glass-border-width: 2px;
+  --chd-glass-border-width: 1px;
 
   /* Custom properties controlled by the React component */
   /* --top-sand-fill-factor: 1; */ /* Default to full, overridden by inline style */
@@ -90,12 +90,28 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 0;
-  width: 4px; /* Width of the falling sand stream */
-  height: 100%; /* Stream fills the neck's height */
+  top: -2px;
+  width: 11px; /* Width of the falling sand stream */
+  height: calc(100% + 1px); /* Stream fills the neck's height */
   background-color: var(--chd-sand-color);
   opacity: var(--stream-opacity); /* Visibility controlled by JS via CSS custom property */
   transition: opacity 0.1s ease-in-out;
-  border-radius: 2px; /* Slightly rounded stream ends */
+  border-radius: 0; /* Slightly rounded stream ends */
   will-change: opacity;
+}
+.timer-info-header {
+  position: relative;
+  height: 130px;
+}
+.countdown {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 60px;
+}
+.finish-label {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 135px;
 }
